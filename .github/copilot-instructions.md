@@ -1,21 +1,34 @@
 # Copilot 指示書（homelab）
 
-## リポジトリの現状（重要）
-- このリポジトリは現時点で [README.md](../README.md) のみで、コード/設定/スクリプトは存在しません。
-- ユーザーが明示しない限り、特定の homelab スタック（例: Kubernetes / Ansible / Terraform / NixOS / Docker Compose）を前提にしないでください。
+## このリポジトリの前提（現状）
+- IaC は `terraform/` 配下で管理する（入口: `terraform/Taskfile.yml`）。
+- 実行コマンドは go-task の `task` に集約（`terraform plan/apply` 直叩きより task を優先）。
+- 開発環境は devcontainer「terraform」が前提（`.devcontainer/terraform/devcontainer.json`）。
+- CLI は aqua で固定（`.devcontainer/terraform/aqua.yaml`: `terraform`, `tflint`, `task`）。
 
-## ここで生産的に動くために
-- まず 1〜3 個の確認質問で、想定ツールと対象環境（単一ホストかクラスタか、OS、採用したい自動化ツール）を確定してください。
-- 小さく段階的に足場を作る（PR 風の増分）方針にしてください。ツール/設定は 1 回に 1 つ追加し、同時にドキュメントも更新します。
+## 主要ワークフロー（Terraform）
+- `cd terraform` して task を実行:
+	- 一覧: `task --list-all --sort none`
+	- ツール確認: `task environment:check`
+	- init: `task terraform:init`
+	- plan/apply: `task terraform:plan -- [options]`, `task terraform:apply -- [options]`（どちらも `-var-file=terraform.tfvars` を固定付与）
+	- destroy: `task terraform:destroy -- [options]`（必要なら `-var-file=...` は CLI args 側で明示）
+	- lint/fmt: `task terraform:lint`, `task terraform:fmt`
 
-## いま時点で確認できる約束事
-- ドキュメントは最小かつ正確に。現状の基準ドキュメントはトップの [README.md](../README.md) のみです。
-- 新しい開発フロー（例: `make`、CI、フォーマッタ）を導入する場合、実行コマンドを [README.md](../README.md) に明記してください。
+## 変数・秘密情報（重要）
+- `task pre-check` が `TF_VAR_api_key` と `TF_VAR_secret_key` を必須とする（未設定だと失敗）。
+- `terraform.tfvars` は task から参照されるが、repo には置かれていない想定（秘密情報は repo 外）。
+- `terraform/.gitignore` で state/秘密ファイルを除外（例: `.terraform/`, `*.tfstate`, `.envrc_common_secrets`）。
 
-## 新しい構成を追加するとき
-- ユーザーの合意が取れてから、一般的な homelab のディレクトリ構成を採用してください（例: `terraform/`, `ansible/`, `k8s/`, `docker/`, `scripts/`, `docs/`）。
-- [README.md](../README.md) に短い「Getting started」節を追加し、前提条件と主要な入口コマンドを記載してください。
+## Devcontainer の注意
+- `.devcontainer/.env` に `UID`/`GID` を用意する運用（CI でも生成している）。
+- `postCreateCommand` が aqua install を実行する（`.devcontainer/terraform/postCreateCommand.sh`）。
 
-## 安全性/運用上の注意
-- 秘密情報は原則リポジトリ外で扱います。トークン/鍵はコミットしないでください。秘密情報の取り扱いを追加する場合は `.gitignore` も更新し、供給方法（環境変数/外部ファイル等）を文書化してください。
-- 実インフラに作用する自動化はオプトイン（明示的に実行したときのみ）にし、破壊的操作があり得る箇所は明確にラベル付けしてください。
+## 変更方針（プロジェクト固有）
+- 1〜3 個の確認質問で対象環境/影響範囲（単一ホスト or クラスタ、OS、適用先）を確定してから進める。
+- 小さく段階的に足場を作る（1 回に 1 つのツール/設定追加）。追加したら README の入口コマンドも更新。
+- 破壊的操作（例: `terraform:destroy`）はデフォルトで実行しない。必要時はユーザー確認の上で提示する。
+
+## CI（把握しておく）
+- devcontainer CI: hadolint + devcontainer build 後に `task environment:check`（`.github/workflows/devcontainer_ci.yaml`）。
+- workflow CI: actionlint（`.github/workflows/github_actions_workflow_ci.yaml`）。
