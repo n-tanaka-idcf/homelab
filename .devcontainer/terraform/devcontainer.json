@@ -1,0 +1,67 @@
+{
+    "name": "terraform",
+    "dockerComposeFile": [
+        "../compose.yml"
+    ],
+    "service": "terraform",
+    "runServices": [
+        "terraform"
+    ],
+    "containerEnv": {
+        "DEVCONTAINER_NAME": "terraform",
+        "DEVCONTAINER_USER": "vscode",
+        "EDITOR": "code --wait",
+        "LC_ALL": "C.UTF-8",
+        "TZ": "Asia/Tokyo"
+    },
+    "remoteEnv": {
+        "PATH": "/home/${containerEnv:DEVCONTAINER_USER}/.local/bin:/home/${containerEnv:DEVCONTAINER_USER}/.local/share/aquaproj-aqua/bin:${containerEnv:PATH}",
+        "AQUA_CONFIG": "${containerWorkspaceFolder}/.devcontainer/${containerEnv:DEVCONTAINER_NAME}/aqua.yaml"
+    },
+    "remoteUser": "vscode",
+    "workspaceFolder": "/workspace",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+        "ghcr.io/devcontainers/features/git:1": {},
+        "ghcr.io/devcontainers/features/sshd:1": {},
+        "ghcr.io/dhoeric/features/hadolint:1": {},
+        "ghcr.io/aquaproj/devcontainer-features/aqua-installer:0.1.6": {
+            "aqua_version": "v2.51.2"
+        }
+    },
+    "postCreateCommand": "bash -c './.devcontainer/$DEVCONTAINER_NAME/postCreateCommand.sh'",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                // Editor
+                "editor.formatOnSave": true,
+                // Files
+                "files.insertFinalNewline": true,
+                "files.trimFinalNewlines": true,
+                "files.trimTrailingWhitespace": true,
+                "files.associations": {
+                    ".envrc*": "shellscript"
+                },
+                // Github Actions
+                "[github-actions-workflow]": {
+                    "editor.tabSize": 2
+                },
+                // Terminal
+                "terminal.integrated.suggest.enabled": true
+                // Workspace
+                // "autoOpenWorkspace.enableAutoOpenAlwaysFirst": true
+            },
+            "extensions": [
+                // Docker
+                "ms-azuretools.vscode-docker",
+                "exiasr.hadolint",
+                // Github Actions
+                "github.vscode-github-actions",
+                // Terraform
+                "hashicorp.terraform"
+                // Workspace
+                // "zoma.vscode-auto-open-workspace"
+            ]
+        }
+    }
+}

@@ -1,0 +1,14 @@
+---
+services:
+  terraform:
+    build:
+      context: terraform/
+      dockerfile: Dockerfile
+      args:
+        - UID
+        - GID
+    tty: true
+    stdin_open: true
+    restart: always
+    volumes:
+      - ../:/workspace

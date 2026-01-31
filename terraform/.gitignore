@@ -1,0 +1,7 @@
+# Etc
+.envrc_common_secrets
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
