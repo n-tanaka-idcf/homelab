@@ -23,7 +23,7 @@ symbol = "git "
 disabled = true
 
 [kubernetes]
-disabled = false
+disabled = true
 symbol = "k8s "
 
 [status]
