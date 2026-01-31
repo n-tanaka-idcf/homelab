@@ -1,0 +1,8 @@
+# Secrets
+source .envrc_common_secrets
+
+# Starship
+eval "$(starship init bash)"
+
+# Task
+eval "$(task --completion bash)"

@@ -1,0 +1,78 @@
+# https://taskfile.dev
+---
+version: "3"
+
+tasks:
+  default:
+    desc: Displays all available tasks.
+    cmds:
+      - task --list-all --sort none
+
+  environment:check:
+    desc: Check required tools are available for this environment.
+    cmds:
+      - starship --version
+      - task --version
+      - terraform version
+      - tflint --version
+
+  pre-check:
+    desc: Check the prerequisites
+    cmds:
+      - |
+        test -n "$TF_VAR_api_key"
+        test -n "$TF_VAR_secret_key"
+
+  terraform:init:
+    desc: |
+      Run terraform init
+      Usage: task terraform:init
+    deps:
+      - pre-check
+    cmds:
+      - terraform init
+
+  terraform:plan:
+    desc: |
+      Run terraform plan
+      Usage: task terraform:plan -- [terraform-plan-options]
+    deps:
+      - pre-check
+    cmds:
+      - terraform plan -var-file=terraform.tfvars {{.CLI_ARGS}}
+
+  terraform:apply:
+    desc: |
+      Run terraform apply
+      Usage: task terraform:apply -- [terraform-apply-options]
+    deps:
+      - pre-check
+    cmds:
+      - terraform apply -var-file=terraform.tfvars {{.CLI_ARGS}}
+
+  terraform:destroy:
+    desc: |
+      Run terraform destroy
+      Usage: task terraform:destroy -- [terraform-destroy-options]
+    deps:
+      - pre-check
+    cmds:
+      - terraform destroy {{.CLI_ARGS}}
+
+  terraform:lint:
+    desc: |
+      Run tflint
+      Usage: task terraform:lint -- [tflint-options]
+    deps:
+      - pre-check
+    cmds:
+      - tflint {{.CLI_ARGS}}
+
+  terraform:fmt:
+    desc: |
+      Run terraform fmt
+      Usage: task terraform:fmt -- [terraform-fmt-options]
+    deps:
+      - pre-check
+    cmds:
+      - terraform fmt -recursive {{.CLI_ARGS}}
