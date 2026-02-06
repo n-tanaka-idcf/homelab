@@ -50,7 +50,7 @@ variable "firewall_rules" {
 
   validation {
     condition = alltrue([
-      for vm_name in keys(var.firewall_rules) : contains(keys(var.nat_instances), vm_name)
+      for vm_name in keys(var.firewall_rules) : contains(var.nat_instances, vm_name)
     ])
     error_message = "All keys in var.firewall_rules must exist in var.nat_instances. Firewall rules can only be created for instances with NAT configured."
   }
