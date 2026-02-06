@@ -1,0 +1,35 @@
+api_url = "https://compute.example.com/client/api"
+
+zone = "your-zone"
+
+network_id = "your-network-id"
+
+keypair = "your-keypair"
+
+instances = {
+  "vm-name-01" = {
+    service_offering = "standard.M8"
+    root_disk_size   = 50
+  }
+}
+
+disks = {
+  # Example: Add additional disks
+  # "vm-name-01" = [
+  #   { size = 100 }
+  # ]
+}
+
+nat_instances = {
+  "vm-name-01" = true
+}
+
+template = "Rocky Linux 9.4 64-bit"
+
+firewall_rules = {
+  "vm-name-01" = {
+    cidr_list = ["0.0.0.0/0"]
+    protocol  = "tcp"
+    ports     = [22]
+  }
+}
