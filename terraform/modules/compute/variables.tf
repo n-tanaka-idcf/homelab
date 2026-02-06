@@ -21,8 +21,8 @@ variable "disks" {
 }
 
 variable "nat_instances" {
-  description = "Map of instances that need NAT and IP"
-  type        = map(bool)
+  description = "Set of instance names that need NAT and IP"
+  type        = set(string)
 }
 
 variable "zone" {

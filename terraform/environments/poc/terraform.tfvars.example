@@ -20,9 +20,7 @@ disks = {
   # ]
 }
 
-nat_instances = {
-  "vm-name-01" = true
-}
+nat_instances = ["vm-name-01"]
 
 template = "Rocky Linux 9.4 64-bit"
 

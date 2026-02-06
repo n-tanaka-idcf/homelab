@@ -37,7 +37,7 @@ variable "disks" {
 }
 
 variable "nat_instances" {
-  type = map(bool)
+  type = set(string)
 }
 
 variable "template" {
