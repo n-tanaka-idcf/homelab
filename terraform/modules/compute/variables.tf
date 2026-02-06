@@ -55,3 +55,9 @@ variable "firewall_rules" {
     error_message = "All keys in var.firewall_rules must exist in var.nat_instances. Firewall rules can only be created for instances with NAT configured."
   }
 }
+
+variable "expunge" {
+  description = "Whether to expunge VMs on destroy. Set to true for permanent deletion (destructive). Default is false for safety."
+  type        = bool
+  default     = false
+}

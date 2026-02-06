@@ -7,7 +7,8 @@ resource "cloudstack_instance" "rancher" {
   network_id       = var.network_id
   keypair          = var.keypair
   root_disk_size   = each.value.root_disk_size
-  expunge          = true
+  # NOTE: expunge is destructive on delete; controlled via module variable for safety.
+  expunge          = var.expunge
 }
 
 locals {
