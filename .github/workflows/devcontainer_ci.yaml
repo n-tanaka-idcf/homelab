@@ -20,6 +20,7 @@ jobs:
     strategy:
       matrix:
         devcontainer:
+          - ansible
           - terraform
 
     name: Build Devcontainer for ${{ matrix.devcontainer }}
